@@ -10,6 +10,7 @@ const CompanySetup = () => {
   const language = [];
   const dateFormat = [];
   const companyRef = useRef(null);
+  const [userData , setUserData] = React.useState([]);
 
   const [inputData, setInputData] = React.useState({
     companyName: "",
@@ -47,25 +48,11 @@ const CompanySetup = () => {
   };
     const handleSaveData =(e)=>{
       e.preventDefault();
-      const data = new FormData();
-      data.append("companyName", inputData.companyName);
-      data.append("companyLogo", inputData.companyLogo);
-      data.append("industry", inputData.industry);
-      data.append("businessType", inputData.businessType);
-      data.append("businessLocation", inputData.businessLocation);
-      data.append("state", inputData.state);
-      data.append("street1", inputData.street1);
-      data.append("street2", inputData.street2);
-      data.append("city", inputData.city);
-      data.append("pincode", inputData.pincode);
-      data.append("phone", inputData.phone);
-      data.append("email", inputData.email);
-      data.append("website", inputData.website);
-      data.append("finanicalYear", inputData.finanicalYear);
-      data.append("language", inputData.language);
-      data.append("date", inputData.date);
-      data.append("pan", inputData.pan);
-      console.log(data);
+      
+      setUserData([...userData,inputData]);
+      console.log(userData);
+      alert("Data Saved Successfully");
+      
     }
 
     async function fetchIndustryData() {
