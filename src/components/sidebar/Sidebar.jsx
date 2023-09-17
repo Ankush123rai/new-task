@@ -170,7 +170,6 @@ const Sidebar = () => {
 
   const handleSubmitData = (e) => {
     e.preventDefault();
-
     const { username, password } = inputValue;
     if (username && password) {
       if (username === "Tasmin" && password === "Tasmin123") {

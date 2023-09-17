@@ -1,22 +1,73 @@
-import React, { useEffect,useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import style from "./CompanySetup.module.css";
 import { Autocomplete, Grid, TextField } from "@mui/material";
-
 
 const CompanySetup = () => {
   const industry = [];
   const country = [];
   const finYear = [];
+  const businessType = [];
+  const language = [];
+  const dateFormat = [];
   const companyRef = useRef(null);
 
-    const handleUpload = (e) => {
-        e.preventDefault();
-        const file = companyRef.current.files[0];
-        console.log(file);
+  const [inputData, setInputData] = React.useState({
+    companyName: "",
+    companyLogo: "",
+    industry: "",
+    businessType: "",
+    businessLocation: "",
+    state: "",
+    street1: "",
+    street2: "",
+    city: "",
+    pincode: "",
+    phone: "",
+    email: "",
+    website: "",
+    finanicalYear: "",
+    language: "",
+    date: "",
+    pan: "",
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setInputData({
+      ...inputData,
+      [name]: value,
+    });
+  };
+
+
+  const handleUpload = (e) => {
+    e.preventDefault();
+    const file = companyRef.current.files[0];
+    console.log(file);
+  };
+    const handleSaveData =(e)=>{
+      e.preventDefault();
+      const data = new FormData();
+      data.append("companyName", inputData.companyName);
+      data.append("companyLogo", inputData.companyLogo);
+      data.append("industry", inputData.industry);
+      data.append("businessType", inputData.businessType);
+      data.append("businessLocation", inputData.businessLocation);
+      data.append("state", inputData.state);
+      data.append("street1", inputData.street1);
+      data.append("street2", inputData.street2);
+      data.append("city", inputData.city);
+      data.append("pincode", inputData.pincode);
+      data.append("phone", inputData.phone);
+      data.append("email", inputData.email);
+      data.append("website", inputData.website);
+      data.append("finanicalYear", inputData.finanicalYear);
+      data.append("language", inputData.language);
+      data.append("date", inputData.date);
+      data.append("pan", inputData.pan);
+      console.log(data);
     }
 
-
-  useEffect(() => {
     async function fetchIndustryData() {
       try {
         const Credentials = btoa("test:test123");
@@ -61,51 +112,120 @@ const CompanySetup = () => {
           data.map((element) => {
             country.push(element.countryname);
           });
-          console.log("log",countryname);
+          console.log("log", countryname);
         } else {
           console.error("Failed to fetch country data.");
         }
-
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     }
     fetchCountryData();
-    
+
     async function fetchFinYearData() {
       try {
         const Credential = btoa("test:test123");
-        const res = await fetch(
-          "http://knowforth.online:3052/api/GetFisYear",
-          {
-            headers: {
-                  Authorization: `Basic ${Credential}`,
-            },
-          }
-        );
+        const res = await fetch("http://knowforth.online:3052/api/GetFisYear", {
+          headers: {
+            Authorization: `Basic ${Credential}`,
+          },
+        });
         if (res.ok) {
           const data = await res.json();
           data.map((element) => {
-            finYear.push(element.finyear);
+            finYear.push(element.fiscalyear);
           });
-          console.log("log",element.finyear);
+          console.log("log", element.fiscalyear);
         } else {
           console.error("Failed to fetch country data.");
-        } 
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     }
     fetchFinYearData();
 
+    async function fetchBusinessTypeData() {
+      try {
+        const Credentials = btoa("test:test123");
+        const res = await fetch(
+          "http://knowforth.online:3052/api/GetBusinessType",
+          {
+            headers: {
+              Authorization: `Basic ${Credentials}`,
+            },
+          }
+        );
+        if (res.ok) {
+          const data = await res.json();
+          data.map((element) => {
+            businessType.push(element.bustype);
+          });
+          console.log("log", element.bustype);
+        } else {
+          console.error("Failed to fetch country data.");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchBusinessTypeData();
 
-  }, []);
+    async function fetchLanguageData() {
+      try {
+        const Credentials = btoa("test:test123");
+        const res = await fetch("http://knowforth.online:3052/api/GetLang", {
+          headers: {
+            Authorization: `Basic ${Credentials}`,
+          },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          data.map((element) => {
+            language.push(element.language);
+          });
+          console.log("log", language);
+        } else {
+          console.error("Failed to fetch country data.");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchLanguageData();
+
+    async function fetchDateFormatData() {
+      try {
+        const Credentials = btoa("test:test123");
+        const res = await fetch(
+          "http://knowforth.online:3052/api/GetDateFormat",
+          {
+            headers: {
+              Authorization: `Basic ${Credentials}`,
+            },
+          }
+        );
+        if (res.ok) {
+          const data = await res.json();
+          data.map((element) => {
+            dateFormat.push(element.dateformat);
+          });
+          console.log("log", dateFormat);
+        } else {
+          console.error("Failed to fetch country data.");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchDateFormatData();
+
 
   return (
     <div className={style.companySetup}>
       <div className={style.container}>
         <h1 className={style.heading}>Company Setup</h1>
-        <form action="">
+        <form action="" onSubmit={handleSaveData}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -113,6 +233,8 @@ const CompanySetup = () => {
                 id="companyName"
                 label="Company Name"
                 variant="outlined"
+                name="companyName"
+                onChange={handleInputChange}
               />
             </Grid>
 
@@ -123,22 +245,29 @@ const CompanySetup = () => {
                   variant="outlined"
                   value={companyRef.current?.files[0]?.name || ""}
                   onClick={() => companyRef.current.click()}
+                  name="companyLogo"
+                  onChange={handleInputChange}
                 />
-                <button 
-                className={style.upload_btn}
-                onClick={() => companyRef.current.click()}
-                >Upload</button>
+                <button
+                  className={style.upload_btn}
+                  onClick={() => companyRef.current.click()}
+                >
+                  Upload
+                </button>
               </div>
-              <input type="file" 
-              ref={companyRef}
-              style={{display:"none"}}
-              onChange={handleUpload}
-              />
+              {/* <input
+                type="file"
+                ref={companyRef}
+                style={{ display: "none" }}
+                onChange={handleInputChange}
+              /> */}
             </Grid>
             <Grid item xs={12} sm={6}>
-            <Autocomplete
+              <Autocomplete
                 disablePortal
                 id="combo-box-demo"
+                name="industry"
+                onChange={handleInputChange}
                 options={industry}
                 renderInput={(params) => (
                   <TextField {...params} label="Industry" variant="outlined" />
@@ -149,9 +278,13 @@ const CompanySetup = () => {
               <Autocomplete
                 className={style.input}
                 id="businessType"
-                options={["Sole Proprietorship", "Partnership", "LLC"]}
+                options={businessType}
                 renderInput={(params) => (
-                  <TextField  {...params} label="Business Type" variant="outlined" />
+                  <TextField
+                    {...params}
+                    label="Business Type"
+                    variant="outlined"
+                  />
                 )}
               />
             </Grid>
@@ -161,8 +294,14 @@ const CompanySetup = () => {
                 id="businessLocation"
                 label="Business Location/Country"
                 options={country}
+                name="businessLocation"
+                onChange={handleInputChange}
                 renderInput={(params) => (
-                  <TextField {...params} label="Business Location/Country" variant="outlined" />
+                  <TextField
+                    {...params}
+                    label="Business Location/Country"
+                    variant="outlined"
+                  />
                 )}
               />
             </Grid>
@@ -171,6 +310,8 @@ const CompanySetup = () => {
                 className={style.input}
                 id="state"
                 label="State"
+                name="state"
+                onChange={handleInputChange}
                 options={country}
                 renderInput={(params) => (
                   <TextField {...params} label="State" variant="outlined" />
@@ -182,6 +323,8 @@ const CompanySetup = () => {
                 className={style.input}
                 id="street1"
                 label="Street-1"
+                name="street1"
+                onChange={handleInputChange}
                 variant="outlined"
               />
             </Grid>
@@ -190,6 +333,8 @@ const CompanySetup = () => {
                 className={style.input}
                 id="street2"
                 label="Street-2"
+                name="street2"
+                onChange={handleInputChange}
                 variant="outlined"
               />
             </Grid>
@@ -199,6 +344,8 @@ const CompanySetup = () => {
                 id="city"
                 label="City/Town/Village"
                 variant="outlined"
+                name="city"
+                onChange={handleInputChange}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -207,6 +354,8 @@ const CompanySetup = () => {
                 id="pincode"
                 label="Pin Code"
                 variant="outlined"
+                name="pincode"
+                onChange={handleInputChange}
               />
             </Grid>
             <Grid item xs={12} sm={3}>
@@ -215,6 +364,8 @@ const CompanySetup = () => {
                 id="Phone"
                 label="Phone Number"
                 variant="outlined"
+                name="phone"
+                onChange={handleInputChange}
               />
             </Grid>
             <Grid item xs={12} sm={3}>
@@ -223,6 +374,8 @@ const CompanySetup = () => {
                 id="email"
                 label="E-mail"
                 variant="outlined"
+                name="email"
+                onChange={handleInputChange}
               />
             </Grid>
             <Grid item xs={12} sm={3}>
@@ -231,15 +384,23 @@ const CompanySetup = () => {
                 id="website"
                 label="Website"
                 variant="outlined"
+                name="website"
+                onChange={handleInputChange}
               />
             </Grid>
             <Grid item xs={12} sm={3}>
               <Autocomplete
                 className={style.input}
                 id="finanicalYear"
+                name="finanicalYear"
+                onChange={handleInputChange}
                 options={finYear}
                 renderInput={(params) => (
-                  <TextField {...params} label="Financial Year" variant="outlined" />
+                  <TextField
+                    {...params}
+                    label="Financial Year"
+                    variant="outlined"
+                  />
                 )}
               />
             </Grid>
@@ -248,18 +409,27 @@ const CompanySetup = () => {
                 className={style.input}
                 id="Language"
                 label="Language"
-                options={["English", "Hindi", "Assamese"]}
+                options={language}
+                name="language"
+                onChange={handleInputChange}
                 renderInput={(params) => (
                   <TextField {...params} label="Language" variant="outlined" />
                 )}
               />
-            </Grid><Grid item xs={12} sm={3}>
-               <Autocomplete
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <Autocomplete
                 className={style.input}
                 id="Date"
-                options={["2021", "2022", "2023"]}
+                name="date"
+                onChange={handleInputChange}
+                options={dateFormat}
                 renderInput={(params) => (
-                  <TextField {...params} label="Date Format" variant="outlined" />
+                  <TextField
+                    {...params}
+                    label="Date Format"
+                    variant="outlined"
+                  />
                 )}
               />
             </Grid>
@@ -269,6 +439,8 @@ const CompanySetup = () => {
                 id="pan"
                 label="PAN No."
                 variant="outlined"
+                name="pan"
+                onChange={handleInputChange}
               />
             </Grid>
           </Grid>
