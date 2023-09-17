@@ -86,9 +86,9 @@ const CompanySetup = () => {
         if (res.ok) {
           const data = await res.json();
           data.map((element) => {
-            finYear.push(element);
+            finYear.push(element.finyear);
           });
-          console.log("log",element);
+          console.log("log",element.finyear);
         } else {
           console.error("Failed to fetch country data.");
         } 
@@ -96,6 +96,7 @@ const CompanySetup = () => {
         console.error("Error fetching data:", error);
       }
     }
+    fetchFinYearData();
 
 
   }, []);
@@ -152,7 +153,6 @@ const CompanySetup = () => {
                 renderInput={(params) => (
                   <TextField  {...params} label="Business Type" variant="outlined" />
                 )}
-
               />
             </Grid>
             <Grid item xs={12} sm={6}>
